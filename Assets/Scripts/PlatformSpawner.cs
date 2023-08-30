@@ -2,40 +2,65 @@ using UnityEngine;
 
 public class PlatformSpawner : MonoBehaviour
 {
-    public GameObject Player;
-    public GameObject PlatformPrefab;
+    private GameObject Player;
+    private GameObject PlatformPrefab;
 
-    private string lastPlatformName;
+    private Transform spawnPos;
+
+    public float spawnHeightAbovePlayer = 1f;
+
+    private GameObject lastPlatform = null;
 
     private void Start()
     {
-        //CreatePlatform();
+        Player = GameObject.FindGameObjectWithTag("Player");
+        PlatformPrefab = GameObject.Find("PlatformPrefab");
+        spawnPos = GameObject.Find("StartPos").transform;
+
+        // Check if some of the variables are not present
+        Debug.Assert(Player, $"Player not found in PlatformSpawner.. Check if object with tag 'Player' exists");
+        Debug.Assert(PlatformPrefab, $"PlatformPrefab not found in PlatformSpawner.. Check if you set the object in inspector");
+        Debug.Assert(spawnPos, $"SpawnPos not found in PlatformSpawner.. Check if you set the transform in inspector");
     }
 
     public void OnPlayerLand(Collision2D collision)
     {
-        if(collision.gameObject.name == lastPlatformName)
+        GameObject platform = collision.otherCollider.gameObject;
+
+        if (lastPlatform != null)
         {
-            Debug.Log("Landed on the same platform");
-            return;
+            // If player landed on the same platform
+            if (platform.name == lastPlatform.name)
+            {
+                Debug.Log("Landed on the same platform");
+                return;
+            }
+            // If player landed on the same or some previous platforms down there
+            else if (platform.transform.position.y <= lastPlatform.transform.position.y)
+            {
+                Debug.Log("Landed on same or some of the previous platforms");
+                return;
+            }
         }
 
-        lastPlatformName = collision.gameObject.name;
+        // Save last platform to check next time
+        lastPlatform = platform;
 
+        // Create new platform
         CreatePlatform();
     }
 
     void CreatePlatform()
     {
-        Debug.Log("Creating new platform");
+        // Create position for new platform
+        Vector3 platformSpawnPos = new Vector3(spawnPos.position.x, Player.transform.position.y + spawnHeightAbovePlayer, spawnPos.position.z);
 
-        Vector3 playerPos = Player.transform.position;
-        float platformWidth = PlatformPrefab.GetComponent<SpriteRenderer>().bounds.size.x;
+        // Create new platform
+        GameObject platform = Instantiate(PlatformPrefab, platformSpawnPos, Quaternion.identity, transform);
 
-        float platformPosX = playerPos.x - 3.5f;
-        Vector3 platformPos = new Vector3(platformPosX, playerPos.y + 1.25f, playerPos.z);
+        //platform.transform.position = platformSpawnPos;
 
-        GameObject platform = Instantiate(PlatformPrefab, platformPos, Quaternion.identity, transform);
+        // Change platform name for checking 'lastPlatformName'
         platform.name = string.Concat("Platform-", GeneratePlatformName());
     }
 
