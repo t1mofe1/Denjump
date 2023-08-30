@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Platform
   - UI
+  - MainPlatform
   layers:
   - Default
   - TransparentFX
@@ -40,6 +41,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: backgraund
+    uniqueID: 4005099249
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

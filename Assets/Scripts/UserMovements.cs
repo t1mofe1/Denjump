@@ -20,6 +20,11 @@ public class UserMovements : MonoBehaviour
 
     void OnJump()
     {
+        if (!gameObject.GetComponent<PlayerPlatformCollision>().isLanded)
+        {
+            return;
+        }
+
         rb.AddForce(new Vector2(0, jumpForce));
     }
 }
