@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlatformSpawner : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class PlatformSpawner : MonoBehaviour
     public float spawnHeightAbovePlayer = 1f;
 
     private GameObject lastPlatform = null;
+
+    //score 
+    public int count;
+    public Text text;
 
     private void Start()
     {
@@ -62,6 +67,11 @@ public class PlatformSpawner : MonoBehaviour
 
         // Change platform name for checking 'lastPlatformName'
         platform.name = string.Concat("Platform-", GeneratePlatformName());
+
+        //Проверка счета
+        count++;
+        text.text = count.ToString();
+        Debug.Log(count);
     }
 
     private string GeneratePlatformName(int length = 5)
