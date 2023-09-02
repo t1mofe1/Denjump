@@ -33,7 +33,8 @@ public class PlatformCollision : MonoBehaviour
         userMovementsScript.isLanded = true;
 
         platformMovementScript.MakePlatformFixed();
-        platformSpawnerScript.OnPlayerLand(collision);
+
+        platformSpawnerScript.OnUserLand(collision);
     }
 
     private void OnCollisionExit2D(Collision2D collision)

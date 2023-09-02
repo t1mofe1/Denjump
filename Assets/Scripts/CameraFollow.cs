@@ -17,7 +17,7 @@ public class CameraMovement : MonoBehaviour
         Debug.Assert(followTarget, $"FollowTarget not found in CameraFollow.. Check if you set the object in inspector");
     }
 
-    void Update()
+    void FixedUpdate()
     {
         Vector3 followTargetPos = new Vector3(transform.position.x, followTarget.transform.position.y + offset, transform.position.z);
         Vector3 cameraPos = Vector3.Max(followTargetPos, GameMinHeight.position);

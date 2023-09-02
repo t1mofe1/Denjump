@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class PlatformSpawner : MonoBehaviour
 {
@@ -12,9 +12,7 @@ public class PlatformSpawner : MonoBehaviour
 
     private GameObject lastPlatform = null;
 
-    //score 
-    public int count;
-    public Text text;
+    private UnityEvent<Collision2D> userLandEvent = new UnityEvent<Collision2D>();
 
     private void Start()
     {
@@ -26,32 +24,7 @@ public class PlatformSpawner : MonoBehaviour
         Debug.Assert(Player, $"Player not found in PlatformSpawner.. Check if object with tag 'Player' exists");
         Debug.Assert(PlatformPrefab, $"PlatformPrefab not found in PlatformSpawner.. Check if you set the object in inspector");
         Debug.Assert(spawnPos, $"SpawnPos not found in PlatformSpawner.. Check if you set the transform in inspector");
-    }
 
-    public void OnPlayerLand(Collision2D collision)
-    {
-        GameObject platform = collision.otherCollider.gameObject;
-
-        if (lastPlatform != null)
-        {
-            // If player landed on the same platform
-            if (platform.name == lastPlatform.name)
-            {
-                Debug.Log("Landed on the same platform");
-                return;
-            }
-            // If player landed on the same or some previous platforms down there
-            else if (platform.transform.position.y <= lastPlatform.transform.position.y)
-            {
-                Debug.Log("Landed on same or some of the previous platforms");
-                return;
-            }
-        }
-
-        // Save last platform to check next time
-        lastPlatform = platform;
-
-        // Create new platform
         CreatePlatform();
     }
 
@@ -63,16 +36,49 @@ public class PlatformSpawner : MonoBehaviour
         // Create new platform
         GameObject platform = Instantiate(PlatformPrefab, platformSpawnPos, Quaternion.identity, transform);
 
-        //platform.transform.position = platformSpawnPos;
-
         // Change platform name for checking 'lastPlatformName'
         platform.name = string.Concat("Platform-", GeneratePlatformName());
 
-        //Проверка счета
-        count++;
-        text.text = count.ToString();
-        Debug.Log(count);
+        // Get platform collision script
+        PlatformCollision platformCollisionScript = platform.GetComponent<PlatformCollision>();
+
+        // Check if the script is present
+        Debug.Assert(platformCollisionScript, $"PlatformCollisionScript not found in Platform.. Check if script exists on PlatformPrefab");
     }
+
+    public void OnUserLand(Collision2D collision)
+    {
+        GameObject platform = collision.otherCollider.gameObject;
+
+        // If platform is not the first one
+        if (lastPlatform != null)
+        {
+            // If player landed on the same platform
+            if (platform.name == lastPlatform.name) return;
+            // If player landed on the same or some previous platforms down there
+            else if (platform.transform.position.y <= lastPlatform.transform.position.y) return;
+        }
+
+        userLandEvent.Invoke(collision);
+
+        // Save last platform to check next time
+        lastPlatform = platform;
+
+        // Create new platform
+        CreatePlatform();
+    }
+
+    // #region User Land Callback
+    public void AddUserLandCallback(UnityAction<Collision2D> cb)
+    {
+        userLandEvent.AddListener(cb);
+    }
+
+    public void RemoveUserLandCallback(UnityAction<Collision2D> cb)
+    {
+        userLandEvent.RemoveListener(cb);
+    }
+    // #endregion User Land Callback
 
     private string GeneratePlatformName(int length = 5)
     {

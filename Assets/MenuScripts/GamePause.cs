@@ -1,46 +1,58 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GamePause : MonoBehaviour
 {
-    public static bool PauseGame;
-    public GameObject pauseMenu;
+    public InputActionAsset actions;
 
-    void Update()
+    public bool isGamePaused;
+    public GameObject pauseMenuObj;
+
+    public string menuSceneName = "Menu";
+
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // Check if some of the variables are not present
+        Debug.Assert(actions, $"Actions not found in GamePause.. Check if it's provided to the script");
+
+        // Pause action
+        InputAction pauseAction = actions.FindAction("PauseGame");
+        pauseAction.performed += ctx => ChangePauseState();
+        pauseAction.Enable();
+    }
+
+    private void ChangePauseState()
+    {
+        Debug.Log("Pause action triggered");
+
+        if (isGamePaused)
         {
-            if (PauseGame)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
+            Resume();
+        }
+        else
+        {
+            Pause();
         }
     }
 
     public void Resume()
     {
-        pauseMenu.SetActive(false);
+        pauseMenuObj.SetActive(false);
         Time.timeScale = 1f;
-        PauseGame = false;
+        isGamePaused = false;
     }
 
     public void Pause()
     {
-        pauseMenu.SetActive(true);
+        pauseMenuObj.SetActive(true);
         Time.timeScale = 0f;
-        PauseGame = true;
-
+        isGamePaused = true;
     }
 
     public void LoadMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene(menuSceneName);
     }
 }

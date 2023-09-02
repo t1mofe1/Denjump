@@ -4,8 +4,11 @@ public class PlatformMovement : MonoBehaviour
 {
     [HideInInspector]
     public bool isFixed = false;
-    public float speed = 1f;
+    public float baseSpeed = 1f;
     public float delay = 0f;
+
+    // TODO: Each platform should have higher speed than previous one
+    private float speed = 1f;
 
     private Transform startPos;
     private Transform endPos;
@@ -16,6 +19,8 @@ public class PlatformMovement : MonoBehaviour
     {
         isFixed = gameObject.name == "Platform";
 
+        speed = baseSpeed;
+
         startPos = GameObject.Find("StartPos").transform;
         endPos = GameObject.Find("EndPos").transform;
 
@@ -24,30 +29,31 @@ public class PlatformMovement : MonoBehaviour
         Debug.Assert(endPos, $"EndPos not found in PlatformMovement.. Check if object with name 'EndPos' exists");
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
+        if (isFixed) return;
+
         float targetX = forwardTurn ? endPos.position.x : startPos.position.x;
 
         Vector2 target = new Vector2(targetX, transform.position.y);
 
-        if (!isFixed)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
-        }
-
-        if (!isFixed && Vector2.Distance(transform.position, target) < 0.1f)
+        if (Vector2.Distance(transform.position, target) < 0.1f)
         {
             isFixed = true;
 
-            Invoke("StartMoving", delay);
+            Invoke(nameof(StartMoving), delay);
+
+            return;
         }
+
+        transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
     }
 
     public void MakePlatformFixed()
     {
         isFixed = true;
     }
-    
+
     private void StartMoving()
     {
         isFixed = false;

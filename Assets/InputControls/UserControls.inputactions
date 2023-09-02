@@ -11,7 +11,7 @@
                     "id": "688a1b4c-8ffa-43fb-837c-f2fb1e9d74fa",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "Tap",
                     "initialStateCheck": false
                 }
             ],
@@ -20,7 +20,7 @@
                     "name": "",
                     "id": "cc339959-69c1-4879-863d-86f40146ca04",
                     "path": "<Touchscreen>/Press",
-                    "interactions": "Press",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "Touchscreen",
                     "action": "Jump",
@@ -31,7 +31,7 @@
                     "name": "",
                     "id": "a032775a-d29c-4f9e-9aa5-a7211ab09b98",
                     "path": "<Gamepad>/dpad/down",
-                    "interactions": "Press",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Jump",
@@ -46,6 +46,56 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "0bb2a542-0dc8-429c-9014-b95bcf7304f4",
+            "actions": [
+                {
+                    "name": "PauseGame",
+                    "type": "Button",
+                    "id": "56ac1028-72b8-4bf3-9d10-2931c5f589e0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d093b048-d1c0-4de2-9100-3edc4ccee1a3",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "PauseGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2067b468-ec8b-4631-9253-67c2960c8090",
+                    "path": "<Gamepad>/start",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "PauseGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "60d55629-4854-4fbd-9eac-7436bf021cad",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "Touchscreen",
+                    "action": "PauseGame",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
